@@ -1,4 +1,4 @@
-﻿.saved-hero,
+.saved-hero,
 .saved-page,
 .continue-section {
   animation: fade-up 320ms ease both;
@@ -40,7 +40,7 @@
 
 .manga-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.2rem;
 }
 
@@ -107,15 +107,19 @@
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 720px) {
   .saved-hero,
   .progress-card {
     flex-direction: column;
     align-items: start;
   }
+
+  .manga-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 520px) {
   .saved-hero {
     padding: 1.1rem;
     border-radius: 20px;
