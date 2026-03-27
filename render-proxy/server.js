@@ -6,7 +6,6 @@ const port = process.env.PORT || 3000;
 const mangaDexBaseUrl = 'https://api.mangadex.org';
 const uploadsBaseUrl = 'https://uploads.mangadex.org';
 const allowedOrigin = process.env.ALLOWED_ORIGIN || '*';
-const allowedImageHosts = new Set(['uploads.mangadex.org']);
 
 app.use(
   cors({
@@ -74,7 +73,7 @@ app.get('/api/mangadex-image', async (req, res) => {
 
     const upstreamUrl = new URL(sourceUrl);
 
-    if (!allowedImageHosts.has(upstreamUrl.hostname)) {
+    if (!isAllowedImageHost(upstreamUrl.hostname)) {
       res.status(400).json({ error: 'Image host is not allowed.' });
       return;
     }
@@ -138,4 +137,8 @@ function appendQueryParams(searchParams, value, prefix) {
   }
 
   searchParams.append(prefix, String(value));
+}
+
+function isAllowedImageHost(hostname) {
+  return hostname === 'uploads.mangadex.org' || hostname.endsWith('.mangadex.network');
 }
