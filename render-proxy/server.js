@@ -13,6 +13,13 @@ app.use(
   })
 );
 
+app.get('/', (_req, res) => {
+  res.json({
+    ok: true,
+    service: 'anime-reader-mangadex-proxy'
+  });
+});
+
 app.get('/health', (_req, res) => {
   res.json({ ok: true });
 });
@@ -27,16 +34,7 @@ app.get('/api/mangadex/*', async (req, res) => {
     }
 
     const upstreamUrl = new URL(`${mangaDexBaseUrl}${targetPath}`);
-
-    for (const [key, value] of Object.entries(req.query)) {
-      if (Array.isArray(value)) {
-        for (const item of value) {
-          upstreamUrl.searchParams.append(key, String(item));
-        }
-      } else if (value !== undefined) {
-        upstreamUrl.searchParams.append(key, String(value));
-      }
-    }
+    appendQueryParams(upstreamUrl.searchParams, req.query);
 
     const upstreamResponse = await fetch(upstreamUrl, {
       method: 'GET',
@@ -61,4 +59,31 @@ app.get('/api/mangadex/*', async (req, res) => {
 app.listen(port, () => {
   console.log(`MangaDex proxy listening on port ${port}`);
 });
- 
+
+function appendQueryParams(searchParams, value, prefix) {
+  if (value === undefined || value === null) {
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const arrayKey = prefix?.endsWith('[]') ? prefix : `${prefix ?? ''}[]`;
+      appendQueryParams(searchParams, item, arrayKey);
+    }
+    return;
+  }
+
+  if (typeof value === 'object') {
+    for (const [key, nestedValue] of Object.entries(value)) {
+      const nextPrefix = prefix ? `${prefix}[${key}]` : key;
+      appendQueryParams(searchParams, nestedValue, nextPrefix);
+    }
+    return;
+  }
+
+  if (!prefix) {
+    return;
+  }
+
+  searchParams.append(prefix, String(value));
+}
