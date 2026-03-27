@@ -67,12 +67,17 @@ interface MangaDexAtHomeResponse {
   };
 }
 
+interface AppConfig {
+  mangaDexApiBaseUrl?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MangaService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://api.mangadex.org';
+  private readonly appConfig = (globalThis as typeof globalThis & { __APP_CONFIG__?: AppConfig }).__APP_CONFIG__;
+  private readonly baseUrl = this.resolveBaseUrl();
   private readonly coverBaseUrl = 'https://uploads.mangadex.org/covers';
   private readonly fallbackCover = 'https://placehold.co/600x900/111111/f3f3f3?text=Manga';
 
@@ -233,5 +238,8 @@ export class MangaService {
     const chapterCount = Number(lastChapter);
     return Number.isFinite(chapterCount) && chapterCount > 0 ? Math.floor(chapterCount) : 0;
   }
-}
 
+  private resolveBaseUrl(): string {
+    return this.appConfig?.mangaDexApiBaseUrl?.replace(/\/$/, '') || 'https://api.mangadex.org';
+  }
+}

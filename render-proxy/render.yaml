@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: anime-reader-mangadex-proxy
+    runtime: node
+    rootDir: render-proxy
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: ALLOWED_ORIGIN
+        sync: false
