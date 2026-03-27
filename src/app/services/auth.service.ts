@@ -1,4 +1,4 @@
-﻿import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import { StorageService } from './storage.service';
@@ -6,7 +6,7 @@ import { StorageService } from './storage.service';
 const USERS_KEY = 'anime-reader-users';
 const SESSION_KEY = 'anime-reader-session';
 const DEMO_USER: User = {
-  displayName: 'Demo Reader',
+  displayName: 'Reader',
   email: 'demo@reader.app',
   password: 'demo123'
 };
@@ -68,12 +68,14 @@ export class AuthService {
 
   private getInitialUsers(): User[] {
     const storedUsers = this.storage.getItem<User[]>(USERS_KEY, []);
-    if (storedUsers.some((user) => user.email.toLowerCase() === DEMO_USER.email)) {
-      return storedUsers;
-    }
+    const withoutOldDemoVariants = storedUsers.filter(
+      (user) => !(user.email.toLowerCase() === DEMO_USER.email && user.password !== DEMO_USER.password)
+    );
+    const hasDemoUser = withoutOldDemoVariants.some(
+      (user) => user.email.toLowerCase() === DEMO_USER.email && user.password === DEMO_USER.password
+    );
+    const seededUsers = hasDemoUser ? withoutOldDemoVariants : [...withoutOldDemoVariants, DEMO_USER];
 
-    const seededUsers = [...storedUsers, DEMO_USER];
-    
     this.storage.setItem(USERS_KEY, seededUsers);
     return seededUsers;
   }

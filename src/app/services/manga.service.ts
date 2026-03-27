@@ -1,21 +1,237 @@
-﻿import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
-import { MOCK_MANGA } from '../data/mock-manga';
-import { Manga, MangaGenre } from '../models/manga.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import { Manga } from '../models/manga.model';
+
+interface MangaDexTextMap {
+  [key: string]: string | undefined;
+}
+
+interface MangaDexTag {
+  attributes?: {
+    name?: MangaDexTextMap;
+  };
+}
+
+interface MangaDexRelationship {
+  id: string;
+  type: string;
+  attributes?: {
+    name?: string;
+    fileName?: string;
+  };
+}
+
+interface MangaDexMangaAttributes {
+  title: MangaDexTextMap;
+  altTitles?: MangaDexTextMap[];
+  description?: MangaDexTextMap;
+  status?: string;
+  lastChapter?: string;
+  tags?: MangaDexTag[];
+}
+
+interface MangaDexMangaItem {
+  id: string;
+  attributes: MangaDexMangaAttributes;
+  relationships?: MangaDexRelationship[];
+}
+
+interface MangaDexListResponse {
+  data: MangaDexMangaItem[];
+}
+
+interface MangaDexStatisticsEntry {
+  rating?: {
+    average?: number;
+  };
+}
+
+interface MangaDexStatisticsResponse {
+  statistics: Record<string, MangaDexStatisticsEntry>;
+}
+
+interface MangaDexChapterItem {
+  id: string;
+}
+
+interface MangaDexChapterListResponse {
+  data: MangaDexChapterItem[];
+}
+
+interface MangaDexAtHomeResponse {
+  baseUrl: string;
+  chapter: {
+    hash: string;
+    data: string[];
+  };
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class MangaService {
-  getManga(): Observable<Manga[]> {
-    return of(MOCK_MANGA).pipe(delay(400));
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = 'https://api.mangadex.org';
+  private readonly coverBaseUrl = 'https://uploads.mangadex.org/covers';
+  private readonly fallbackCover = 'https://placehold.co/600x900/111111/f3f3f3?text=Manga';
+
+  getManga(title = ''): Observable<Manga[]> {
+    let params = new HttpParams()
+      .set('limit', '20')
+      .append('includes[]', 'cover_art')
+      .append('availableTranslatedLanguage[]', 'en');
+
+    if (title.trim()) {
+      params = params.set('title', title.trim()).set('order[relevance]', 'desc');
+    }
+
+    return this.http.get<MangaDexListResponse>(`${this.baseUrl}/manga`, { params }).pipe(
+      switchMap((response) => {
+        const mangaIds = response.data.map((item) => item.id);
+
+        if (!mangaIds.length) {
+          return of([]);
+        }
+
+        return this.getStatistics(mangaIds).pipe(
+          map((statistics) => response.data.map((item) => this.mapManga(item, statistics[item.id])))
+        );
+      }),
+      catchError(() => of([]))
+    );
   }
 
   getMangaById(id: string): Observable<Manga | undefined> {
-    return of(MOCK_MANGA.find((manga) => manga.id === id)).pipe(delay(300));
+    if (!id) {
+      return of(undefined);
+    }
+
+    let params = new HttpParams()
+      .append('includes[]', 'cover_art')
+      .append('includes[]', 'author')
+      .append('includes[]', 'artist');
+
+    return forkJoin({
+      manga: this.http.get<{ data: MangaDexMangaItem }>(`${this.baseUrl}/manga/${id}`, { params }),
+      statistics: this.getStatistics([id]),
+      pages: this.getPagesForManga(id)
+    }).pipe(
+      map(({ manga, statistics, pages }) => this.mapManga(manga.data, statistics[id], pages)),
+      catchError(() => of(undefined))
+    );
   }
 
-  getGenres(): MangaGenre[] {
-    return ['Action', 'Adventure', 'Romance'];
+  private getStatistics(mangaIds: string[]): Observable<Record<string, MangaDexStatisticsEntry>> {
+    let params = new HttpParams();
+
+    for (const mangaId of mangaIds) {
+      params = params.append('manga[]', mangaId);
+    }
+
+    return this.http.get<MangaDexStatisticsResponse>(`${this.baseUrl}/statistics/manga`, { params }).pipe(
+      map((response) => response.statistics ?? {}),
+      catchError(() => of({}))
+    );
+  }
+
+  private getPagesForManga(mangaId: string): Observable<string[]> {
+    let params = new HttpParams()
+      .set('limit', '1')
+      .set('order[chapter]', 'asc')
+      .append('manga', mangaId)
+      .append('translatedLanguage[]', 'en');
+
+    return this.http.get<MangaDexChapterListResponse>(`${this.baseUrl}/chapter`, { params }).pipe(
+      switchMap((response) => {
+        const firstChapterId = response.data[0]?.id;
+
+        if (!firstChapterId) {
+          return of([]);
+        }
+
+        return this.http.get<MangaDexAtHomeResponse>(`${this.baseUrl}/at-home/server/${firstChapterId}`).pipe(
+          map((atHome) =>
+            atHome.chapter.data.map((fileName) => `${atHome.baseUrl}/data/${atHome.chapter.hash}/${fileName}`)
+          ),
+          catchError(() => of([]))
+        );
+      }),
+      catchError(() => of([]))
+    );
+  }
+
+  private mapManga(item: MangaDexMangaItem, statistics?: MangaDexStatisticsEntry, pages: string[] = []): Manga {
+    const coverFileName = item.relationships
+      ?.find((relationship) => relationship.type === 'cover_art')
+      ?.attributes?.fileName;
+    const coverImage = coverFileName ? `${this.coverBaseUrl}/${item.id}/${coverFileName}` : this.fallbackCover;
+    const author =
+      item.relationships?.find((relationship) => relationship.type === 'author')?.attributes?.name ??
+      item.relationships?.find((relationship) => relationship.type === 'artist')?.attributes?.name ??
+      'Unknown author';
+    const fallbackPages = pages.length ? pages : [coverImage];
+
+    return {
+      id: item.id,
+      title: this.pickLocalizedText(item.attributes.title, item.attributes.altTitles) ?? 'Untitled',
+      coverImage,
+      bannerImage: coverImage,
+      description: this.pickLocalizedText(item.attributes.description) ?? 'No description available for this title yet.',
+      genres:
+        item.attributes.tags
+          ?.map((tag) => this.pickLocalizedText(tag.attributes?.name))
+          .filter((tag): tag is string => !!tag) ?? [],
+      rating: this.normalizeRating(statistics?.rating?.average),
+      author,
+      status: this.mapStatus(item.attributes.status),
+      chapters: this.toChapterCount(item.attributes.lastChapter),
+      pages: fallbackPages
+    };
+  }
+
+  private pickLocalizedText(textMap?: MangaDexTextMap, fallbacks: MangaDexTextMap[] = []): string | undefined {
+    const candidates = [textMap, ...fallbacks].filter((entry): entry is MangaDexTextMap => !!entry);
+
+    for (const candidate of candidates) {
+      const value =
+        candidate['en'] ??
+        candidate['en-us'] ??
+        candidate['ja-ro'] ??
+        Object.values(candidate).find((entry) => !!entry);
+
+      if (value) {
+        return value;
+      }
+    }
+
+    return undefined;
+  }
+
+  private normalizeRating(rawRating?: number): number {
+    if (!rawRating) {
+      return 0;
+    }
+
+    return Math.round((rawRating / 2) * 10) / 10;
+  }
+
+  private mapStatus(status?: string): Manga['status'] {
+    switch (status) {
+      case 'completed':
+        return 'Completed';
+      case 'hiatus':
+        return 'Hiatus';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return 'Ongoing';
+    }
+  }
+
+  private toChapterCount(lastChapter?: string): number {
+    const chapterCount = Number(lastChapter);
+    return Number.isFinite(chapterCount) && chapterCount > 0 ? Math.floor(chapterCount) : 0;
   }
 }
+

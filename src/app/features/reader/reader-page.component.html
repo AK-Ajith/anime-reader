@@ -1,6 +1,6 @@
-﻿<section class="loading-state" *ngIf="loading()">
+<section class="loading-state" *ngIf="loading()">
   <mat-spinner diameter="48"></mat-spinner>
-  <p>Opening reader...</p>
+  <p>Loading pages...</p>
 </section>
 
 <section class="reader-page" *ngIf="!loading() && manga() as selectedManga">
@@ -11,7 +11,8 @@
         Back to Details
       </a>
       <h1>{{ selectedManga.title }}</h1>
-      <p>Page {{ currentPage() + 1 }} of {{ selectedManga.pages.length }}</p>
+      <p *ngIf="selectedManga.pages.length">Page {{ currentPage() + 1 }} of {{ selectedManga.pages.length }}</p>
+      <p *ngIf="!selectedManga.pages.length">No readable pages are available for this title yet.</p>
     </div>
     <div class="reader-actions">
       <button mat-stroked-button type="button" (click)="goToPrevious()" [disabled]="currentPage() === 0">
@@ -33,13 +34,21 @@
     <mat-progress-bar mode="determinate" [value]="progressPercent()"></mat-progress-bar>
   </div>
 
-  <div class="reader-canvas">
+  <div class="reader-canvas" *ngIf="currentImage(); else readerUnavailable">
     <img [src]="currentImage()" [alt]="selectedManga.title + ' page ' + (currentPage() + 1)" />
   </div>
 </section>
 
+<ng-template #readerUnavailable>
+  <section class="empty-state">
+    <mat-icon>menu_book</mat-icon>
+    <h2>No pages available</h2>
+    <a mat-flat-button routerLink="/home">Back Home</a>
+  </section>
+</ng-template>
+
 <section class="empty-state" *ngIf="!loading() && !manga()">
   <mat-icon>menu_book</mat-icon>
   <h2>Reader unavailable</h2>
-  <a mat-flat-button routerLink="/home">Return Home</a>
+  <a mat-flat-button routerLink="/home">Back Home</a>
 </section>

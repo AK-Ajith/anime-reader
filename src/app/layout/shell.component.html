@@ -1,17 +1,17 @@
-﻿<div class="shell">
+<div class="shell">
   <mat-toolbar class="topbar">
     <div class="brand-cluster">
       <a class="brand" routerLink="/home">
-        <span class="brand-mark">N</span>
+        <span class="brand-mark">M</span>
         <span>
-          <strong>NightShelf</strong>
-          <small>Anime Reader</small>
+          <strong>Manga Reader</strong>
+          <small>Library</small>
         </span>
       </a>
 
       <nav class="nav-links">
         <a mat-button routerLink="/home" routerLinkActive="active-link">Home</a>
-        <a mat-button routerLink="/saved" routerLinkActive="active-link">My List</a>
+        <a mat-button routerLink="/saved" routerLinkActive="active-link">Saved</a>
       </nav>
     </div>
 
@@ -20,7 +20,7 @@
     <div class="user-block" *ngIf="authService.currentUser() as user">
       <div class="user-copy">
         <span>{{ user.displayName }}</span>
-        <small>Watching now</small>
+        <small>Signed in</small>
       </div>
       <button mat-stroked-button type="button" (click)="authService.logout()">
         <mat-icon>logout</mat-icon>

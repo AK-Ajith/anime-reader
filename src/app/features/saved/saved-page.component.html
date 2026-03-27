@@ -1,8 +1,8 @@
-﻿<section class="saved-hero">
+<section class="saved-hero">
   <div>
-    <p class="kicker">My List</p>
+    <p class="kicker">Saved</p>
     <h1>Saved Manga</h1>
-    <p class="hero-copy">A darker shelf for everything you bookmarked and every story you are still moving through.</p>
+    <p class="hero-copy">Keep track of bookmarked titles and continue reading without searching again.</p>
   </div>
   <div class="saved-count">{{ savedManga().length }} saved</div>
 </section>
@@ -10,8 +10,8 @@
 <section class="saved-page">
   <div class="empty-state" *ngIf="!savedManga().length">
     <mat-icon>bookmark_add</mat-icon>
-    <h2>No bookmarks yet</h2>
-    <p>Save manga from the details page or directly from the library cards.</p>
+    <h2>No saved manga yet</h2>
+    <p>Save titles from the details page or directly from the library cards.</p>
   </div>
 
   <div class="manga-grid" *ngIf="savedManga().length">
@@ -22,7 +22,7 @@
 <section class="continue-section" *ngIf="continueReading().length">
   <div class="section-heading">
     <div>
-      <p class="kicker">Continue Watching</p>
+      <p class="kicker">Continue Reading</p>
       <h2>Reading history</h2>
     </div>
   </div>
@@ -30,7 +30,7 @@
   <div class="progress-list">
     <mat-card class="progress-card" *ngFor="let item of continueReading()">
       <div>
-        <p class="progress-label">{{ item.genres.join(' • ') }}</p>
+        <p class="progress-label">{{ item.genres.join(' � ') }}</p>
         <h3>{{ item.title }}</h3>
         <p>Last page read: {{ item.progress.currentPage + 1 }}</p>
       </div>

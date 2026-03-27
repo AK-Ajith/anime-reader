@@ -199,3 +199,69 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 640px) {
+  .hero-panel {
+    padding: 1.1rem;
+    gap: 1rem;
+    border-radius: 22px;
+  }
+
+  .hero-panel h1 {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+    line-height: 1;
+  }
+
+  .hero-copy {
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .hero-meta {
+    gap: 0.6rem;
+    margin: 1rem 0 1.25rem;
+  }
+
+  .hero-meta span {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+  }
+
+  .hero-highlight {
+    min-height: 240px;
+    border-radius: 18px;
+  }
+
+  .highlight-overlay {
+    padding: 1rem;
+  }
+
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .continue-grid,
+  .manga-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .continue-card img {
+    height: 180px;
+  }
+
+  .continue-copy {
+    padding: 1rem;
+  }
+
+  .filter-bar {
+    padding: 0.9rem;
+    border-radius: 18px;
+  }
+
+  .loading-state,
+  .empty-state {
+    min-height: 220px;
+    padding: 1rem;
+  }
+}

@@ -1,28 +1,28 @@
-﻿<section class="hero-panel">
+<section class="hero-panel">
   <div class="hero-copy-block">
-    <p class="eyebrow">Trending this week</p>
-    <h1>The late-night shelf for manga marathons.</h1>
+    <p class="eyebrow">Library</p>
+    <h1>Find manga and keep your reading organized.</h1>
     <p class="hero-copy">
-      Search titles, sort your mood by genre, and jump straight back into the page you left. Darker surfaces, softer text, and artwork-first layouts everywhere.
+      Search titles, filter by genre, and jump back into the page where you stopped.
     </p>
 
     <div class="hero-meta">
-      <span>{{ mangaList().length || 3 }} featured series</span>
-      <span>Resume across sessions</span>
-      <span>Bookmarks saved locally</span>
+      <span>{{ mangaList().length || 0 }} titles loaded</span>
+      <span>English results</span>
+      <span>Progress saved locally</span>
     </div>
 
     <div class="hero-actions">
-      <a mat-flat-button routerLink="/saved">Open My List</a>
+      <a mat-flat-button routerLink="/saved">View Saved</a>
     </div>
   </div>
 
   <div class="hero-highlight" *ngIf="mangaList().length">
     <img [src]="mangaList()[0].bannerImage" [alt]="mangaList()[0].title + ' banner'" />
     <div class="highlight-overlay">
-      <p>Featured pick</p>
+      <p>Now viewing</p>
       <h2>{{ mangaList()[0].title }}</h2>
-      <span>{{ mangaList()[0].genres.join(' • ') }}</span>
+      <span>{{ mangaList()[0].genres.join(' � ') }}</span>
     </div>
   </div>
 </section>
@@ -30,7 +30,7 @@
 <section class="continue-section" *ngIf="continueReading().length">
   <div class="section-heading">
     <div>
-      <p class="kicker">Continue Watching</p>
+      <p class="kicker">Continue Reading</p>
       <h2>Pick up where you left off</h2>
     </div>
   </div>
@@ -56,8 +56,8 @@
     <input
       matInput
       [ngModel]="searchTerm()"
-      (ngModelChange)="searchTerm.set($event)"
-      placeholder="Try Skyline Chronicles"
+      (ngModelChange)="onSearchTermChange($event)"
+      placeholder="Search by title"
     />
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
@@ -66,7 +66,7 @@
     <mat-label>Genre</mat-label>
     <mat-select [ngModel]="selectedGenre()" (ngModelChange)="selectedGenre.set($event)">
       <mat-option value="All">All genres</mat-option>
-      <mat-option *ngFor="let genre of genres" [value]="genre">{{ genre }}</mat-option>
+      <mat-option *ngFor="let genre of genres()" [value]="genre">{{ genre }}</mat-option>
     </mat-select>
   </mat-form-field>
 
@@ -83,20 +83,20 @@
   <div class="section-heading">
     <div>
       <p class="kicker">Browse</p>
-      <h2>Featured shelves</h2>
+      <h2>Manga catalog</h2>
     </div>
     <span>{{ filteredManga().length }} titles</span>
   </div>
 
   <div class="loading-state" *ngIf="loading()">
     <mat-spinner diameter="48"></mat-spinner>
-    <p>Loading shelves...</p>
+    <p>Loading manga...</p>
   </div>
 
   <div class="empty-state" *ngIf="!loading() && !filteredManga().length">
     <mat-icon>menu_book</mat-icon>
     <h3>No manga matched your filters.</h3>
-    <p>Try widening the search or switching shelves.</p>
+    <p>Try a different title, genre, or rating.</p>
   </div>
 
   <div class="manga-grid" *ngIf="!loading() && filteredManga().length">
