@@ -51,8 +51,14 @@ interface MangaDexStatisticsResponse {
   statistics: Record<string, MangaDexStatisticsEntry>;
 }
 
+interface MangaDexChapterAttributes {
+  chapter?: string;
+  translatedLanguage?: string;
+}
+
 interface MangaDexChapterItem {
   id: string;
+  attributes?: MangaDexChapterAttributes;
 }
 
 interface MangaDexChapterListResponse {
@@ -78,7 +84,6 @@ export class MangaService {
   private readonly http = inject(HttpClient);
   private readonly appConfig = (globalThis as typeof globalThis & { __APP_CONFIG__?: AppConfig }).__APP_CONFIG__;
   private readonly baseUrl = this.resolveBaseUrl();
-  private readonly coverBaseUrl = 'https://uploads.mangadex.org/covers';
   private readonly fallbackCover = 'https://placehold.co/600x900/111111/f3f3f3?text=Manga';
 
   getManga(title = ''): Observable<Manga[]> {
@@ -142,14 +147,14 @@ export class MangaService {
 
   private getPagesForManga(mangaId: string): Observable<string[]> {
     let params = new HttpParams()
-      .set('limit', '1')
+      .set('limit', '5')
       .set('order[chapter]', 'asc')
       .append('manga', mangaId)
       .append('translatedLanguage[]', 'en');
 
     return this.http.get<MangaDexChapterListResponse>(`${this.baseUrl}/chapter`, { params }).pipe(
       switchMap((response) => {
-        const firstChapterId = response.data[0]?.id;
+        const firstChapterId = response.data.find((chapter) => !!chapter.id)?.id;
 
         if (!firstChapterId) {
           return of([]);
@@ -157,7 +162,9 @@ export class MangaService {
 
         return this.http.get<MangaDexAtHomeResponse>(`${this.baseUrl}/at-home/server/${firstChapterId}`).pipe(
           map((atHome) =>
-            atHome.chapter.data.map((fileName) => `${atHome.baseUrl}/data/${atHome.chapter.hash}/${fileName}`)
+            atHome.chapter.data.map((fileName) =>
+              this.buildImageProxyUrl(`${atHome.baseUrl}/data/${atHome.chapter.hash}/${fileName}`)
+            )
           ),
           catchError(() => of([]))
         );
@@ -170,7 +177,7 @@ export class MangaService {
     const coverFileName = item.relationships
       ?.find((relationship) => relationship.type === 'cover_art')
       ?.attributes?.fileName;
-    const coverImage = coverFileName ? `${this.coverBaseUrl}/${item.id}/${coverFileName}` : this.fallbackCover;
+    const coverImage = coverFileName ? this.buildCoverProxyUrl(item.id, coverFileName) : this.fallbackCover;
     const author =
       item.relationships?.find((relationship) => relationship.type === 'author')?.attributes?.name ??
       item.relationships?.find((relationship) => relationship.type === 'artist')?.attributes?.name ??
@@ -193,6 +200,14 @@ export class MangaService {
       chapters: this.toChapterCount(item.attributes.lastChapter),
       pages: fallbackPages
     };
+  }
+
+  private buildCoverProxyUrl(mangaId: string, fileName: string): string {
+    return `${this.baseUrl}/mangadex-cover/${mangaId}/${fileName}`;
+  }
+
+  private buildImageProxyUrl(sourceUrl: string): string {
+    return `${this.baseUrl}/mangadex-image?url=${encodeURIComponent(sourceUrl)}`;
   }
 
   private pickLocalizedText(textMap?: MangaDexTextMap, fallbacks: MangaDexTextMap[] = []): string | undefined {
