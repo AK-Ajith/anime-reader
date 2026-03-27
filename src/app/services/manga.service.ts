@@ -51,14 +51,8 @@ interface MangaDexStatisticsResponse {
   statistics: Record<string, MangaDexStatisticsEntry>;
 }
 
-interface MangaDexChapterAttributes {
-  chapter?: string;
-  translatedLanguage?: string;
-}
-
 interface MangaDexChapterItem {
   id: string;
-  attributes?: MangaDexChapterAttributes;
 }
 
 interface MangaDexChapterListResponse {
@@ -84,6 +78,7 @@ export class MangaService {
   private readonly http = inject(HttpClient);
   private readonly appConfig = (globalThis as typeof globalThis & { __APP_CONFIG__?: AppConfig }).__APP_CONFIG__;
   private readonly baseUrl = this.resolveBaseUrl();
+  private readonly proxyOrigin = this.resolveProxyOrigin();
   private readonly fallbackCover = 'https://placehold.co/600x900/111111/f3f3f3?text=Manga';
 
   getManga(title = ''): Observable<Manga[]> {
@@ -203,11 +198,11 @@ export class MangaService {
   }
 
   private buildCoverProxyUrl(mangaId: string, fileName: string): string {
-    return `${this.baseUrl}/mangadex-cover/${mangaId}/${fileName}`;
+    return `${this.proxyOrigin}/api/mangadex-cover/${mangaId}/${fileName}`;
   }
 
   private buildImageProxyUrl(sourceUrl: string): string {
-    return `${this.baseUrl}/mangadex-image?url=${encodeURIComponent(sourceUrl)}`;
+    return `${this.proxyOrigin}/api/mangadex-image?url=${encodeURIComponent(sourceUrl)}`;
   }
 
   private pickLocalizedText(textMap?: MangaDexTextMap, fallbacks: MangaDexTextMap[] = []): string | undefined {
@@ -256,5 +251,13 @@ export class MangaService {
 
   private resolveBaseUrl(): string {
     return this.appConfig?.mangaDexApiBaseUrl?.replace(/\/$/, '') || 'https://api.mangadex.org';
+  }
+
+  private resolveProxyOrigin(): string {
+    if (this.baseUrl.includes('/api/mangadex')) {
+      return this.baseUrl.replace(/\/api\/mangadex$/, '');
+    }
+
+    return this.baseUrl;
   }
 }
