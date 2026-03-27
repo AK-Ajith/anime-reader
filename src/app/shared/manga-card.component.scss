@@ -1,0 +1,116 @@
+﻿.manga-card {
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: linear-gradient(180deg, rgba(23, 24, 28, 0.98), rgba(14, 15, 18, 0.98));
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.manga-card:hover {
+  transform: scale(1.03) translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 32px 70px rgba(0, 0, 0, 0.5);
+}
+
+.cover-wrap {
+  position: relative;
+  isolation: isolate;
+}
+
+.cover-wrap img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.cover-meta,
+.card-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  z-index: 2;
+}
+
+.cover-meta {
+  top: 0;
+}
+
+.card-overlay {
+  bottom: 0;
+  color: #d7dae0;
+  font-size: 0.82rem;
+}
+
+.cover-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), transparent 38%, rgba(0, 0, 0, 0.75));
+}
+
+.status-pill {
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(11, 12, 15, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #d0d3da;
+  font-size: 0.75rem;
+}
+
+.bookmark-button {
+  background: rgba(17, 18, 21, 0.92) !important;
+}
+
+.card-headline {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card-headline h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card-headline small {
+  color: var(--text-tertiary);
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--gold);
+}
+
+.rating mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+mat-card-content {
+  padding-top: 1rem;
+}
+
+mat-card-content p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  min-height: 82px;
+}
+
+mat-chip-set {
+  margin-top: 0.85rem;
+}
+
+mat-card-actions {
+  padding: 0 1rem 1rem;
+}

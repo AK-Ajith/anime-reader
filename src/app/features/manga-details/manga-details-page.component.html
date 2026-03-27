@@ -1,0 +1,51 @@
+﻿<section class="loading-state" *ngIf="loading()">
+  <mat-spinner diameter="48"></mat-spinner>
+  <p>Loading manga details...</p>
+</section>
+
+<section class="details-page" *ngIf="!loading() && manga() as selectedManga">
+  <div class="hero" [style.background-image]="'linear-gradient(90deg, rgba(6, 6, 7, 0.88), rgba(6, 6, 7, 0.45)), linear-gradient(180deg, rgba(6, 6, 7, 0.1), rgba(6, 6, 7, 0.96)), url(' + selectedManga.bannerImage + ')'">
+    <div class="cover-column">
+      <img class="cover" [src]="selectedManga.coverImage" [alt]="selectedManga.title + ' cover'" />
+    </div>
+
+    <div class="hero-copy">
+      <p class="eyebrow">{{ selectedManga.status }} • {{ selectedManga.chapters }} chapters</p>
+      <h1>{{ selectedManga.title }}</h1>
+      <p class="description">{{ selectedManga.description }}</p>
+
+      <div class="meta-grid">
+        <div>
+          <span>Rating</span>
+          <strong>{{ selectedManga.rating }}</strong>
+        </div>
+        <div>
+          <span>Author</span>
+          <strong>{{ selectedManga.author }}</strong>
+        </div>
+        <div>
+          <span>Genres</span>
+          <strong>{{ selectedManga.genres.join(' • ') }}</strong>
+        </div>
+      </div>
+
+      <mat-chip-set>
+        <mat-chip *ngFor="let genre of selectedManga.genres">{{ genre }}</mat-chip>
+      </mat-chip-set>
+
+      <div class="action-row">
+        <a mat-flat-button [routerLink]="['/reader', selectedManga.id]">Read Now</a>
+        <button mat-stroked-button type="button" (click)="toggleSaved()">
+          <mat-icon>{{ isSaved() ? 'bookmark' : 'bookmark_add' }}</mat-icon>
+          {{ isSaved() ? 'In My List' : 'Save to My List' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="empty-state" *ngIf="!loading() && !manga()">
+  <mat-icon>error</mat-icon>
+  <h2>Manga not found</h2>
+  <a mat-flat-button routerLink="/home">Back to Home</a>
+</section>

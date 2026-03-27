@@ -1,0 +1,136 @@
+﻿.shell {
+  min-height: 100vh;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  gap: 1rem;
+  min-height: 76px;
+  padding: 0 2rem;
+  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(6, 6, 7, 0.92), rgba(12, 12, 14, 0.78));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand strong {
+  font-size: 1.1rem;
+}
+
+.brand small {
+  color: var(--text-tertiary);
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ff2d37, #a9040d);
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-links a {
+  min-width: 72px;
+  color: var(--text-secondary);
+}
+
+.active-link {
+  color: var(--text-primary) !important;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.user-block {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.user-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.user-copy span {
+  font-weight: 600;
+}
+
+.user-copy small {
+  color: var(--text-tertiary);
+}
+
+.shell-content {
+  width: min(1480px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 1.5rem 0 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 1rem;
+  }
+
+  .brand-cluster {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .nav-links {
+    width: 100%;
+  }
+
+  .toolbar-spacer {
+    display: none;
+  }
+
+  .user-block {
+    margin-left: auto;
+  }
+
+  .user-copy {
+    display: none;
+  }
+
+  .shell-content {
+    width: min(100% - 20px, 1480px);
+    padding-top: 1rem;
+  }
+}

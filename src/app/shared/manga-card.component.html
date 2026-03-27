@@ -1,0 +1,39 @@
+﻿<mat-card class="manga-card" [routerLink]="['/manga', manga.id]">
+  <div class="cover-wrap">
+    <img [src]="manga.coverImage" [alt]="manga.title + ' cover'" />
+
+    <div class="cover-meta">
+      <span class="status-pill">{{ manga.status }}</span>
+      <button mat-mini-fab class="bookmark-button" type="button" (click)="toggleSaved($event)">
+        <mat-icon>{{ isSaved() ? 'bookmark' : 'bookmark_add' }}</mat-icon>
+      </button>
+    </div>
+
+    <div class="cover-fade"></div>
+    <div class="card-overlay">
+      <span>{{ manga.chapters }} chapters</span>
+      <span>{{ manga.genres[0] }}</span>
+    </div>
+  </div>
+
+  <mat-card-content>
+    <div class="card-headline">
+      <div>
+        <h3>{{ manga.title }}</h3>
+        <small>{{ manga.author }}</small>
+      </div>
+      <span class="rating">
+        <mat-icon>star</mat-icon>
+        {{ manga.rating }}
+      </span>
+    </div>
+    <p>{{ manga.description }}</p>
+    <mat-chip-set>
+      <mat-chip *ngFor="let genre of manga.genres">{{ genre }}</mat-chip>
+    </mat-chip-set>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <a mat-flat-button [routerLink]="['/reader', manga.id]">Read Now</a>
+  </mat-card-actions>
+</mat-card>

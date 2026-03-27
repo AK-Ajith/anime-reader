@@ -1,1 +1,111 @@
-/* You can add global styles to this file, and also import other style files */
+﻿@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+:root {
+  --bg: #0b0b0c;
+  --bg-elevated: #111214;
+  --surface: #17181c;
+  --surface-strong: #1d1f24;
+  --surface-soft: #141519;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text-primary: #e6e7ea;
+  --text-secondary: #a1a4ad;
+  --text-tertiary: #7d818b;
+  --accent: #e50914;
+  --accent-soft: #ff5b61;
+  --gold: #d8b469;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', 'Segoe UI', sans-serif;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at top center, rgba(229, 9, 20, 0.12), transparent 24%),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.035), transparent 18%),
+    linear-gradient(180deg, #090909 0%, #0f1013 45%, #080808 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+.brand strong {
+  font-family: 'Space Grotesk', 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+img {
+  display: block;
+}
+
+.mat-mdc-card,
+.mat-mdc-outlined-card {
+  border-radius: 24px !important;
+  background: linear-gradient(180deg, rgba(25, 26, 30, 0.96), rgba(18, 19, 23, 0.98)) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-text-field-wrapper {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.mat-mdc-chip {
+  --mdc-chip-elevated-container-color: rgba(255, 255, 255, 0.06);
+  --mdc-chip-label-text-color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mat-mdc-unelevated-button:not(:disabled) {
+  background: linear-gradient(135deg, var(--accent), #b20710) !important;
+  color: #f4f4f4 !important;
+  box-shadow: none !important;
+}
+
+.mat-mdc-outlined-button:not(:disabled),
+.mat-mdc-button:not(:disabled),
+.mat-mdc-mini-fab {
+  box-shadow: none !important;
+}
+
+.mat-toolbar {
+  color: var(--text-primary);
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label,
+.mat-mdc-select-value,
+.mat-mdc-input-element,
+.mat-mdc-form-field-icon-suffix,
+.mat-mdc-form-field .mat-mdc-floating-label {
+  color: var(--text-secondary) !important;
+}

@@ -1,0 +1,74 @@
+﻿<section class="auth-page">
+  <div class="hero-copy">
+    <p class="eyebrow">NightShelf Original</p>
+    <h1>Read manga with a darker, cleaner shelf built for long sessions.</h1>
+    <p class="supporting-copy">
+      A Netflix-inspired reader MVP with bookmarks, resume state, and a focused dark interface that keeps the artwork in front.
+    </p>
+
+    <div class="feature-pills">
+      <span>Cinematic dark theme</span>
+      <span>Instant resume</span>
+      <span>Local-only progress</span>
+    </div>
+
+    <div class="demo-panel">
+      <p class="demo-label">Demo access</p>
+      <strong>demo@reader.app</strong>
+      <span>Password: demo123</span>
+    </div>
+  </div>
+
+  <mat-card class="auth-card">
+    <div class="card-topline">
+      <span>Start Watching</span>
+      <small>Everything stays in localStorage</small>
+    </div>
+
+    <mat-tab-group animationDuration="250ms">
+      <mat-tab label="Login">
+        <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="auth-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+            <mat-icon matSuffix>mail</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" />
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+
+          <button mat-flat-button type="submit">Enter Reader</button>
+        </form>
+      </mat-tab>
+
+      <mat-tab label="Sign Up">
+        <form [formGroup]="signupForm" (ngSubmit)="submitSignup()" class="auth-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Display Name</mat-label>
+            <input matInput formControlName="displayName" />
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+            <mat-icon matSuffix>mail</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" />
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+
+          <button mat-flat-button type="submit">Create Profile</button>
+        </form>
+      </mat-tab>
+    </mat-tab-group>
+
+    <p class="feedback">{{ feedback() }}</p>
+  </mat-card>
+</section>
