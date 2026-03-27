@@ -37,7 +37,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/maga-reader/browser
+          path: dist/anime-reader/browser
 
   deploy:
     environment:

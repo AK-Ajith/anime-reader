@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "maga-reader": {
+    "anime-reader": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "maga-reader:build:production"
+              "buildTarget": "anime-reader:build:production"
             },
             "development": {
-              "buildTarget": "maga-reader:build:development"
+              "buildTarget": "anime-reader:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -1,4 +1,4 @@
-﻿# maga-reader
+﻿# anime-reader
 
 Frontend-only Angular manga reader MVP with a dark Netflix-inspired UI, mock authentication, bookmarks, continue reading, and localStorage persistence.
 
@@ -6,7 +6,7 @@ Frontend-only Angular manga reader MVP with a dark Netflix-inspired UI, mock aut
 
 - `npm start` runs the local dev server
 - `npm run build` builds the app for production
-- `npm run build:pages` builds the app for GitHub Pages with the `/maga-reader/` base href
+- `npm run build:pages` builds the app for GitHub Pages with the `/anime-reader/` base href
 
 ## GitHub Pages
 
@@ -21,4 +21,4 @@ To publish on GitHub Pages:
 
 The site will publish at:
 
-`https://<your-github-username>.github.io/maga-reader/`
+`https://<your-github-username>.github.io/anime-reader/`
