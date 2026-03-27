@@ -1,4 +1,4 @@
-﻿@import '@angular/material/prebuilt-themes/azure-blue.css';
+@import '@angular/material/prebuilt-themes/azure-blue.css';
 
 :root {
   --bg: #0b0b0c;
@@ -20,15 +20,19 @@
 html,
 body {
   min-height: 100%;
+  width: 100%;
+  max-width: 100%;
 }
 
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  overflow-x: hidden;
   font-family: 'Outfit', 'Segoe UI', sans-serif;
   color: var(--text-primary);
   background:
@@ -62,6 +66,17 @@ p {
 
 img {
   display: block;
+  max-width: 100%;
+}
+
+app-root,
+app-shell,
+.shell,
+.shell-content,
+section,
+div,
+mat-card {
+  max-width: 100%;
 }
 
 .mat-mdc-card,
@@ -108,10 +123,6 @@ img {
 .mat-mdc-form-field-icon-suffix,
 .mat-mdc-form-field .mat-mdc-floating-label {
   color: var(--text-secondary) !important;
-}
-
-body {
-  overflow-x: hidden;
 }
 
 @media (max-width: 640px) {
