@@ -61,3 +61,4 @@ app.get('/api/mangadex/*', async (req, res) => {
 app.listen(port, () => {
   console.log(`MangaDex proxy listening on port ${port}`);
 });
+ 
