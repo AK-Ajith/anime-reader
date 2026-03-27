@@ -1,4 +1,4 @@
-ï»¿<section class="loading-state" *ngIf="loading()">
+<section class="loading-state" *ngIf="loading()">
   <mat-spinner diameter="48"></mat-spinner>
   <p>Loading manga details...</p>
 </section>
@@ -10,7 +10,7 @@
     </div>
 
     <div class="hero-copy">
-      <p class="eyebrow">{{ selectedManga.status }} â€¢ {{ selectedManga.chapters }} chapters</p>
+      <p class="eyebrow">{{ selectedManga.status }} • {{ selectedManga.chapters }} chapters</p>
       <h1>{{ selectedManga.title }}</h1>
       <p class="description">{{ selectedManga.description }}</p>
 
@@ -25,7 +25,7 @@
         </div>
         <div>
           <span>Genres</span>
-          <strong>{{ selectedManga.genres.join(' â€¢ ') }}</strong>
+          <strong>{{ selectedManga.genres.join(' • ') }}</strong>
         </div>
       </div>
 
@@ -34,10 +34,10 @@
       </mat-chip-set>
 
       <div class="action-row">
-        <a mat-flat-button [routerLink]="['/reader', selectedManga.id]">Read Now</a>
+        <a mat-flat-button [routerLink]="['/reader', selectedManga.id]">Open Reader</a>
         <button mat-stroked-button type="button" (click)="toggleSaved()">
           <mat-icon>{{ isSaved() ? 'bookmark' : 'bookmark_add' }}</mat-icon>
-          {{ isSaved() ? 'In My List' : 'Save to My List' }}
+          {{ isSaved() ? 'Saved' : 'Save' }}
         </button>
       </div>
     </div>
@@ -47,5 +47,5 @@
 <section class="empty-state" *ngIf="!loading() && !manga()">
   <mat-icon>error</mat-icon>
   <h2>Manga not found</h2>
-  <a mat-flat-button routerLink="/home">Back to Home</a>
+  <a mat-flat-button routerLink="/home">Back Home</a>
 </section>

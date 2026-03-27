@@ -1,4 +1,4 @@
-﻿.auth-page {
+.auth-page {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(360px, 460px);
   gap: 2.5rem;
@@ -48,42 +48,13 @@
   margin-top: 1.7rem;
 }
 
-.feature-pills span,
-.demo-panel {
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.035);
-  backdrop-filter: blur(8px);
-}
-
 .feature-pills span {
   padding: 0.85rem 1rem;
   border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(8px);
   color: #d3d6de;
-}
-
-.demo-panel {
-  display: grid;
-  gap: 0.35rem;
-  width: fit-content;
-  margin-top: 1.6rem;
-  padding: 1.1rem 1.25rem;
-  border-radius: 22px;
-}
-
-.demo-label {
-  margin-bottom: 0.2rem;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.72rem;
-}
-
-.demo-panel strong {
-  font-size: 1.05rem;
-}
-
-.demo-panel span {
-  color: var(--text-secondary);
 }
 
 .auth-card {
@@ -129,5 +100,34 @@
 
   .hero-copy h1 {
     font-size: clamp(2.4rem, 9vw, 4rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    min-height: auto;
+    padding: 1rem;
+    gap: 1.25rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.1rem, 11vw, 3rem);
+    line-height: 1;
+  }
+
+  .supporting-copy {
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .feature-pills span {
+    width: 100%;
+  }
+
+  .card-topline,
+  .auth-form,
+  .feedback {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }

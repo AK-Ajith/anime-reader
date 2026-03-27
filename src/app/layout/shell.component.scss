@@ -134,3 +134,48 @@
     padding-top: 1rem;
   }
 }
+
+@media (max-width: 640px) {
+  .topbar {
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem;
+    min-height: 0;
+  }
+
+  .brand-cluster {
+    gap: 0.75rem;
+  }
+
+  .brand {
+    gap: 0.7rem;
+  }
+
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+  }
+
+  .nav-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .nav-links a,
+  .user-block button {
+    width: 100%;
+  }
+
+  .user-block {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .shell-content {
+    width: calc(100% - 16px);
+    padding-top: 0.85rem;
+    padding-bottom: 1.5rem;
+  }
+}

@@ -114,3 +114,28 @@
     align-items: start;
   }
 }
+
+@media (max-width: 640px) {
+  .saved-hero {
+    padding: 1.1rem;
+    border-radius: 20px;
+  }
+
+  .saved-count {
+    width: 100%;
+    text-align: center;
+  }
+
+  .manga-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .progress-card {
+    padding: 0.75rem;
+  }
+}

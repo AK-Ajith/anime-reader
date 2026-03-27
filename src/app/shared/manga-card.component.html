@@ -1,4 +1,4 @@
-﻿<mat-card class="manga-card" [routerLink]="['/manga', manga.id]">
+<mat-card class="manga-card" [routerLink]="['/manga', manga.id]">
   <div class="cover-wrap">
     <img [src]="manga.coverImage" [alt]="manga.title + ' cover'" />
 
@@ -34,6 +34,6 @@
   </mat-card-content>
 
   <mat-card-actions>
-    <a mat-flat-button [routerLink]="['/reader', manga.id]">Read Now</a>
+    <a mat-flat-button [routerLink]="['/reader', manga.id]">Open Reader</a>
   </mat-card-actions>
 </mat-card>

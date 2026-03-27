@@ -109,3 +109,24 @@ img {
 .mat-mdc-form-field .mat-mdc-floating-label {
   color: var(--text-secondary) !important;
 }
+
+body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+
+  .mat-mdc-card,
+  .mat-mdc-outlined-card {
+    border-radius: 20px !important;
+  }
+
+  .mat-mdc-button,
+  .mat-mdc-unelevated-button,
+  .mat-mdc-outlined-button {
+    min-height: 44px;
+  }
+}
