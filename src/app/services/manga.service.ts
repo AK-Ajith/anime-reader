@@ -149,22 +149,33 @@ export class MangaService {
 
     return this.http.get<MangaDexChapterListResponse>(`${this.baseUrl}/chapter`, { params }).pipe(
       switchMap((response) => {
-        const firstChapterId = response.data.find((chapter) => !!chapter.id)?.id;
+        const chapterIds = response.data.map((chapter) => chapter.id).filter((chapterId): chapterId is string => !!chapterId);
 
-        if (!firstChapterId) {
+        if (!chapterIds.length) {
           return of([]);
         }
 
-        return this.http.get<MangaDexAtHomeResponse>(`${this.baseUrl}/at-home/server/${firstChapterId}`).pipe(
-          map((atHome) =>
-            atHome.chapter.data.map((fileName) =>
-              this.buildImageProxyUrl(`${atHome.baseUrl}/data/${atHome.chapter.hash}/${fileName}`)
-            )
-          ),
-          catchError(() => of([]))
-        );
+        return this.getPagesForChapterIds(chapterIds);
       }),
       catchError(() => of([]))
+    );
+  }
+
+  private getPagesForChapterIds(chapterIds: string[], index = 0): Observable<string[]> {
+    const chapterId = chapterIds[index];
+
+    if (!chapterId) {
+      return of([]);
+    }
+
+    return this.http.get<MangaDexAtHomeResponse>(`${this.baseUrl}/at-home/server/${chapterId}`).pipe(
+      map((atHome) =>
+        atHome.chapter.data.map((fileName) =>
+          this.buildImageProxyUrl(`${atHome.baseUrl}/data/${atHome.chapter.hash}/${fileName}`)
+        )
+      ),
+      switchMap((pages) => (pages.length ? of(pages) : this.getPagesForChapterIds(chapterIds, index + 1))),
+      catchError(() => this.getPagesForChapterIds(chapterIds, index + 1))
     );
   }
 
