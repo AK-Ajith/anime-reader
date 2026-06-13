@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import 'dotenv/config';
+import '@shopify/shopify-api/adapters/node';
 import { LATEST_API_VERSION, shopifyApi } from '@shopify/shopify-api';
 
 const app = express();
