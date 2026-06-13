@@ -10,9 +10,10 @@ const uploadsBaseUrl = 'https://uploads.mangadex.org';
 const allowedOrigin = process.env.ALLOWED_ORIGIN || '*';
 const shopifyScopes = parseScopes(process.env.SHOPIFY_SCOPES);
 const shopifyHostName = normalizeHostName(process.env.HOST);
-const shopify = canInitializeShopify()
+const missingShopifyConfig = getMissingShopifyConfig();
+const shopify = missingShopifyConfig.length === 0
   ? shopifyApi({
-      apiKey: "a390a41a7e2de0dfb5aa9df1fb636bd2",
+      apiKey: process.env.SHOPIFY_API_KEY,
       apiSecretKey: process.env.SHOPIFY_API_SECRET,
       scopes: shopifyScopes,
       hostName: shopifyHostName,
@@ -70,9 +71,7 @@ app.get('/health', (_req, res) => {
 
 app.get('/auth', async (req, res) => {
   if (!shopify) {
-    res.status(500).json({
-      error: 'Shopify auth is not configured. Set SHOPIFY_API_KEY, SHOPIFY_API_SECRET, and HOST.'
-    });
+    res.status(500).json(buildShopifyConfigError());
     return;
   }
 
@@ -105,9 +104,7 @@ app.get('/auth', async (req, res) => {
 
 app.get('/auth/callback', async (req, res) => {
   if (!shopify) {
-    res.status(500).json({
-      error: 'Shopify auth is not configured. Set SHOPIFY_API_KEY, SHOPIFY_API_SECRET, and HOST.'
-    });
+    res.status(500).json(buildShopifyConfigError());
     return;
   }
 
@@ -281,8 +278,22 @@ function normalizeHostName(rawHost) {
   return rawHost.replace(/^https?:\/\//, '').replace(/\/$/, '');
 }
 
-function canInitializeShopify() {
-  return Boolean(process.env.SHOPIFY_API_KEY && process.env.SHOPIFY_API_SECRET && shopifyHostName);
+function getMissingShopifyConfig() {
+  const missing = [];
+
+  if (!process.env.SHOPIFY_API_KEY) {
+    missing.push('SHOPIFY_API_KEY');
+  }
+
+  if (!process.env.SHOPIFY_API_SECRET) {
+    missing.push('SHOPIFY_API_SECRET');
+  }
+
+  if (!shopifyHostName) {
+    missing.push('HOST');
+  }
+
+  return missing;
 }
 
 function isShopifyRelatedRequest(req) {
@@ -303,4 +314,17 @@ function pickHeaders(headers, keys) {
       .map((key) => [key, headers[key]])
       .filter(([, value]) => value !== undefined)
   );
+}
+
+function buildShopifyConfigError() {
+  return {
+    error: 'Shopify auth is not configured for this server.',
+    missing: missingShopifyConfig,
+    expected: {
+      SHOPIFY_API_KEY: 'Shopify app Client ID',
+      SHOPIFY_API_SECRET: 'Shopify app secret',
+      HOST: 'Render hostname only, for example anime-reader.onrender.com'
+    },
+    nextStep: 'Add the missing values in Render environment variables and redeploy the service.'
+  };
 }
