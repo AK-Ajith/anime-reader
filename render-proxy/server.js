@@ -12,7 +12,7 @@ const shopifyScopes = parseScopes(process.env.SHOPIFY_SCOPES);
 const shopifyHostName = normalizeHostName(process.env.HOST);
 const shopify = canInitializeShopify()
   ? shopifyApi({
-      apiKey: process.env.SHOPIFY_API_KEY,
+      apiKey: "a390a41a7e2de0dfb5aa9df1fb636bd2",
       apiSecretKey: process.env.SHOPIFY_API_SECRET,
       scopes: shopifyScopes,
       hostName: shopifyHostName,
